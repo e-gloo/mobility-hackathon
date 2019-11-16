@@ -29,7 +29,43 @@ const topics = {
   road: config.TOPIC + "/prod/environment/change/roads_status",
   lines: config.TOPIC + "/prod/environment/change/lines_status",
   traffic: config.TOPIC + "/prod/environment/change/traffic_conditions",
-  breakdown: config.TOPIC + "/prod/environment/change/breakdown"
+  breakdown: config.TOPIC + "/prod/environment/change/breakdown",
+
+  //move
+  moveTo: config.TOPIC + "/prod/user/path"
 };
 
-export { config, topics };
+const api = {
+  last:
+    "http://agent-controller." +
+    config.NAMESPACE +
+    ".xp65.renault-digital.com/api/user/situation/last",
+  weather:
+    "http://context-controller." +
+    config.NAMESPACE +
+    ".xp65.renault-digital.com/api/context/weather/current",
+  air:
+    "http://context-controller." +
+    config.NAMESPACE +
+    ".xp65.renault-digital.com/api/context/air/current",
+  shortest: {
+    walk:
+      "http://graph." +
+      config.NAMESPACE +
+      ".xp65.renault-digital.com/road_graph/shortest_path/walk",
+    bike:
+      "http://graph." +
+      config.NAMESPACE +
+      ".xp65.renault-digital.com/road_graph/shortest_path/bike",
+    subway:
+      "http://graph." +
+      config.NAMESPACE +
+      ".xp65.renault-digital.com/road_graph/shortest_path/subway",
+    car:
+      "http://graph." +
+      config.NAMESPACE +
+      ".xp65.renault-digital.com/road_graph/shortest_path/car"
+  }
+};
+
+export { config, topics, api };
