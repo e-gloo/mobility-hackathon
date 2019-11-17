@@ -18,8 +18,8 @@ class App extends React.Component {
       positions: [],
       situation: {
         position: {
-          x: 5.0,
-          y: 0.2
+          x: 5.6,
+          y: 3.8
         }
       }
     };
