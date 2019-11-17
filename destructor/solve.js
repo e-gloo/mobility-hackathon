@@ -34,9 +34,12 @@ client.on('connect', () => {
   console.log(subway);
 })
 
-function generateHell() {
+function bringHellToTheWorld() {
   setTimeout(() => {
-    generateHell()
+    for (var i = 0; i < 10; i++) {
+
+    }
+    bringHellToTheWorld()
   }, 2000)
 }
 
