@@ -70,6 +70,14 @@ class App extends React.Component {
             }
           }
           break;
+
+        case topics.road:
+        case topics.lines:
+        case topics.traffic:
+          this.setState({ path_queue: [], total_queue: [] });
+          this.startMission();
+
+          break;
         case topics.mission:
           this.setState({
             current_screen: "mission",
