@@ -6,13 +6,13 @@ class Footer extends React.Component {
       case 'mission':
       return (
         <footer>
-          <a href='#' id="confirm-mode" onClick={e => {
-              e.preventDefault()
-              this.props.utils.startMission()
-            }}
-            >
-            Confirmer
-          </a>
+          <div className="path_queue">
+            {this.props.queue.map((q, i) => (
+              <div className="path_item" key={i}>
+                <img src={`/img/icons/${this.props.selected_mode}-${q.mean}.png`} alt={q.mean} />
+              </div>
+            ))}
+          </div>
         </footer>
       )
       default:

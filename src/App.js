@@ -27,6 +27,7 @@ class App extends React.Component {
       current_screen: "standby",
       positions: [],
       path_queue: [],
+      total_queue: [],
       situation: {
         position: {
           x: 0.2,
@@ -66,7 +67,7 @@ class App extends React.Component {
           if (this.state.path_queue.length > 0) {
             let path_queue = this.state.path_queue
             Move.move(path_queue.shift())
-            this.setState({ path_queue: path_queue })
+            this.setState({ path_queue: [...path_queue] })
           }
         }
         break;
@@ -82,8 +83,9 @@ class App extends React.Component {
         const positions = this.state.positions;
         positions.shift();
         this.setState({
+          total_queue: [],
           positions: [...positions],
-          current_screen: positions.length > 0 ? "mission" : "finished"
+          current_screen: !positions.length ? "finished" : "mission"
         });
         break;
 
@@ -113,16 +115,19 @@ class App extends React.Component {
 
   updatePositions(positions) {
     console.log("in update positions", positions);
-    this.setState({ positions: positions });
+    this.setState({ positions: [...positions] });
   }
 
   startMission() {
     // alert("GO GO GO !!!");
     this.path = new Path(this.modes[this.state.selected_mode].name);
     this.path.findByProfil(this.state.situation, this.state.positions[0]).then(path_queue => {
-      Move.move(path_queue.shift())
-      this.setState({ path_queue: path_queue })
       console.log(path_queue);
+      this.setState({ total_queue: [...path_queue] })
+      if (path_queue.length) {
+        Move.move(path_queue.shift())
+      }
+      this.setState({ path_queue: [...path_queue] })
     });
   }
 
@@ -153,9 +158,17 @@ class App extends React.Component {
 
     return (
       <React.Fragment>
-        <Header current_screen={this.state.current_screen} utils={this.utils} />
+        <Header
+          current_screen={this.state.current_screen}
+          utils={this.utils}
+          />
         {cpnt}
-        <Footer current_screen={this.state.current_screen} path={this.state.path_queue} utils={this.utils} />
+        <Footer
+          current_screen={this.state.current_screen}
+          selected_mode={this.state.selected_mode}
+          queue={this.state.total_queue}
+          utils={this.utils}
+          />
       </React.Fragment>
     );
   }
