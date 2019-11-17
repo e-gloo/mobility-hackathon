@@ -102,3 +102,18 @@ a#confirm-mode {
   font-size: 1.3em;
   text-decoration: none;
 }
+
+.path_queue {
+  display: flex;
+  flex-direction: row;
+  justify-content: center
+}
+
+.path_queue .path_item {
+  display: block;
+  padding: 2em;
+}
+
+.path_queue .path_item img {
+  max-height: 6em;
+}

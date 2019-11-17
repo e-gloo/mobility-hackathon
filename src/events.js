@@ -16,6 +16,7 @@ client.on("connect", () => {
   client.subscribe(topics.lines);
   client.subscribe(topics.traffic);
   client.subscribe(topics.breakdown);
+  client.subscribe(topics.carState);
 });
 
 export default client;

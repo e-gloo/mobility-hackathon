@@ -27,6 +27,7 @@ class App extends React.Component {
       current_screen: "standby",
       positions: [],
       path_queue: [],
+      total_queue: [],
       situation: {
         position: {
           x: 0.2,
@@ -65,7 +66,7 @@ class App extends React.Component {
             if (this.state.path_queue.length > 0) {
               let path_queue = this.state.path_queue;
               Move.move(path_queue.shift());
-              this.setState({ path_queue: path_queue });
+              this.setState({ path_queue: [...path_queue] });
             }
           }
           break;
@@ -82,19 +83,26 @@ class App extends React.Component {
           positions.shift();
           this.setState({
             positions: [...positions],
-            current_screen: positions.length > 0 ? "mission" : "finished"
+            total_queue: [],
+            current_screen: !positions.length ? "finished" : "mission"
           });
           break;
 
         case topics.carState:
+          console.log({ message });
           if (
             this.state.path_queue.length > 0 &&
-            Math.abs(message.position.x - user.data.position.x) <= 0.6 &&
-            Math.abs(message.position.y - user.data.position.y) <= 0.6
+            Math.abs(message.position.x - this.state.situation.position.x) <
+              0.6 &&
+            Math.abs(message.position.y - this.state.situation.position.y) < 0.6
           ) {
-            let path_queue = this.state.path_queue;
-            Move.move(path_queue.shift());
-            this.setState({ path_queue: path_queue });
+            setTimeout(() => {
+              if (this.state.path_queue.length > 0) {
+                let path_queue = this.state.path_queue;
+                Move.move(path_queue.shift());
+                this.setState({ path_queue: path_queue });
+              }
+            }, 5000);
           }
 
         default:
@@ -121,7 +129,7 @@ class App extends React.Component {
 
   updatePositions(positions) {
     console.log("in update positions", positions);
-    this.setState({ positions: positions });
+    this.setState({ positions: [...positions] });
   }
 
   startMission() {
@@ -130,9 +138,12 @@ class App extends React.Component {
     this.path
       .findByProfil(this.state.situation, this.state.positions[0])
       .then(path_queue => {
-        Move.move(path_queue.shift());
-        this.setState({ path_queue: path_queue });
         console.log(path_queue);
+        this.setState({ total_queue: [...path_queue] });
+        if (path_queue.length) {
+          Move.move(path_queue.shift());
+        }
+        this.setState({ path_queue: [...path_queue] });
       });
   }
 
@@ -167,7 +178,8 @@ class App extends React.Component {
         {cpnt}
         <Footer
           current_screen={this.state.current_screen}
-          path={this.state.path_queue}
+          selected_mode={this.state.selected_mode}
+          queue={this.state.total_queue}
           utils={this.utils}
         />
       </React.Fragment>

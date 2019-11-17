@@ -32,7 +32,8 @@ const topics = {
   breakdown: config.TOPIC + "/prod/environment/change/breakdown",
 
   //move
-  moveTo: config.TOPIC + "/prod/user/path"
+  moveTo: config.TOPIC + "/prod/user/path",
+  carState: config.TOPIC + "/prod/0000000000000000/status/attitude"
 };
 
 const api = {
