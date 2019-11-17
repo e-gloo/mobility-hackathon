@@ -9,11 +9,19 @@ client.on("connect", () => {
   client.publish(
     "team07/prod/user/path-to-target",
     JSON.stringify({
-      vehicle_type: "walk",
-      path: [[5.6, 3.8], [5.7, 3.8]],
+      vehicle_type: "car",
+      path: [[1.9, 3.8], [2.0, 3.8]],
       costs: [0.0, 0.0]
     })
   );
+  // client.publish(
+  //   "team07/prod/user/path-to-target",
+  //   JSON.stringify({
+  //     vehicle_type: "walk",
+  //     path: [[5.5, 3.8], [5.6, 3.8]],
+  //     costs: [0.0, 0.0]
+  //   })
+  // );
   client.publish(
     "team07/prod/context/change/weather",
     JSON.stringify({
