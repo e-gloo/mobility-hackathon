@@ -144,7 +144,8 @@ client.on("message", async (topic, message) => {
   }
 
   if (topic === "team07/prod/0000000000000000/status/attitude") {
-    if (message.speed === 0) {
+    if (Math.abs(message.position.x - user.data.position.x) <= 0.6 ||
+      Math.abs(message.position.y - user.data.position.y) <= 0.6) {
       console.log("!arrived");
       move();
     }
