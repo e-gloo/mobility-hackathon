@@ -70,7 +70,9 @@ class App extends React.Component {
             }
           }
           break;
-
+        case topics.situation:
+          this.setState({ situation: message });
+          break;
         case topics.road:
         case topics.lines:
         case topics.traffic:
@@ -97,7 +99,6 @@ class App extends React.Component {
           break;
 
         case topics.carState:
-          console.log({ message });
           if (
             this.state.path_queue.length > 0 &&
             Math.abs(message.position.x - this.state.situation.position.x) <
@@ -142,6 +143,7 @@ class App extends React.Component {
 
   startMission() {
     // alert("GO GO GO !!!");
+    client.publish(topics.stop, null);
     this.path = new Path(this.modes[this.state.selected_mode].name);
     this.path
       .findByProfil(this.state.situation, this.state.positions[0])

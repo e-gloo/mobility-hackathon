@@ -33,7 +33,8 @@ const topics = {
 
   //move
   moveTo: config.TOPIC + "/prod/user/path",
-  carState: config.TOPIC + "/prod/0000000000000000/status/attitude"
+  carState: config.TOPIC + "/prod/0000000000000000/status/attitude",
+  stop: config.TOPIC + "/prod/user/stop"
 };
 
 const api = {
