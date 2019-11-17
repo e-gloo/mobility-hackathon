@@ -36,7 +36,6 @@ class Path {
   }
 
   async findByProfil(departure, arrival) {
-    console.log("In findByProfile");
     console.log(departure, arrival);
 
     const vehicle = await axios.get(
@@ -100,7 +99,13 @@ class Path {
 
     }
     catch (e) {
-      return []
+      return [{
+        mean: 'walk',
+        to: {
+          x: arrival.x,
+          y: arrival.y,
+        }
+      }]
     }
   }
 }
