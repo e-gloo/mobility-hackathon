@@ -3,8 +3,8 @@
 //   TOPIC: "project-65",
 //   NAMESPACE: "p65-dev",
 //   BROKER_DOMAIN: "mr1dns3dpz5mjj.messaging.solace.cloud",
-//   BROKER_USER: "team-demo",
-//   BROKER_PASSWORD: "avion",
+//   BROKER_USER: "team-prod",
+//   BROKER_PASSWORD: "megane",
 //   BROKER_MQTT_PORT: 8443,
 //   BROKER_TCP_PORT: 1883
 // };
