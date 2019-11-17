@@ -74,10 +74,10 @@ client.on("connect", () => {
     JSON.stringify({
       mission: "Yo !",
       positions: [
+        { x: 21.8, y: 5.6 },
         { x: 0.2, y: 2.0 },
         { x: 7.4, y: 3.8 },
         { x: 13.9, y: 3.8 },
-        { x: 21.0, y: 5.8 },
       ]
     })
   );
@@ -144,8 +144,8 @@ client.on("connect", () => {
 //     );
 //   }
 // }
-// client.on("message", (topic, message) => {
-//   console.log(`${topic}: ${message.toString()}`);
+client.on("message", (topic, message) => {
+  console.log(`${topic}: ${message.toString()}`);
 //   if (topic === "team07/prod/user/mission") {
 //     mission = JSON.parse(message).positions;
 //     console.log(mission);
@@ -166,4 +166,4 @@ client.on("connect", () => {
 //     position = JSON.parse(message).situation.position;
 //     console.log(position);
 //   }
-// });
+});

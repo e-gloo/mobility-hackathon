@@ -16,7 +16,7 @@ class Footer extends React.Component {
         </footer>
       )
       default:
-      return (<footer></footer>)
+      return <footer style={{ backgroundColor: '#292929' }}></footer>
     }
 
   }

@@ -3,10 +3,6 @@ import React from 'react'
 class Header extends React.Component {
   render () {
     switch (this.props.current_screen) {
-      case 'standby':
-      return (
-        <header></header>
-      )
       case 'mission':
       return (
         <header>
@@ -20,7 +16,7 @@ class Header extends React.Component {
         </header>
       )
       default:
-      return (<header></header>)
+      return <header style={{ backgroundColor: '#292929' }}></header>
     }
   }
 }

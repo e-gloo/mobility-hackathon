@@ -79,8 +79,13 @@ class App extends React.Component {
           break;
 
         case topics.objective:
-          const positions = this.state.positions;
-          positions.shift();
+          const positions = this.state.positions
+          if (
+            Math.abs(positions[0].x - this.state.situation.position.x) < 0.6 &&
+            Math.abs(positions[0].y - this.state.situation.position.y) < 0.6
+          ) {
+            positions.shift();
+          }
           this.setState({
             positions: [...positions],
             total_queue: [],
