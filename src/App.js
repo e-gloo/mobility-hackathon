@@ -1,7 +1,9 @@
 import React from "react";
 import "./App.css";
 
-import { topics } from "./config";
+import axios from 'axios';
+
+import { topics, api } from "./config";
 import client from "./events";
 
 import Move from "./logic/Move";
@@ -24,10 +26,11 @@ class App extends React.Component {
       last_message: {},
       current_screen: "standby",
       positions: [],
+      path_queue: [],
       situation: {
         position: {
-          x: 5.6,
-          y: 3.8
+          x: 0.2,
+          y: 0.2
         }
       }
     };
@@ -53,31 +56,52 @@ class App extends React.Component {
     // call component according to event
     client.on("message", (topic, message) => {
       switch (topic) {
-        case topics.mission:
-          this.setState({
-            current_screen: "mission",
-            last_topic: topic,
-            last_message: JSON.parse(message)
+        case topics.status:
+        if (JSON.parse(message).status === 'stopped') {
+          axios
+          .get(api.last)
+          .then(response => {
+            this.setState({ situation: response.data });
           });
-          break;
+          if (this.state.path_queue.length > 0) {
+            let path_queue = this.state.path_queue
+            Move.move(path_queue.shift())
+            this.setState({ path_queue: path_queue })
+          }
+        }
+        break;
+        case topics.mission:
+        this.setState({
+          current_screen: "mission",
+          last_topic: topic,
+          last_message: JSON.parse(message)
+        });
+        break;
 
         case topics.objective:
-          this.setState({ current_screen: "objective" });
-          const positions = this.state.positions;
-          positions.shift();
-          this.setState({ positions: [...positions] });
-          if (positions.length > 0) {
-            //Move.move(this.state.positions[0]);
-          }
-          break;
+        const positions = this.state.positions;
+        positions.shift();
+        this.setState({
+          positions: [...positions],
+          current_screen: positions.length > 0 ? "mission" : "finished"
+        });
+        break;
 
         default:
-          this.setState({
-            last_topic: topic,
-            last_message: JSON.parse(message)
-          });
-          break;
+        this.setState({
+          last_topic: topic,
+          last_message: JSON.parse(message)
+        });
+        break;
       }
+    });
+  }
+
+  componentDidMount() {
+    axios
+    .get(api.last)
+    .then(response => {
+      this.setState({ situation: response.data });
     });
   }
 
@@ -95,7 +119,11 @@ class App extends React.Component {
   startMission() {
     // alert("GO GO GO !!!");
     this.path = new Path(this.modes[this.state.selected_mode].name);
-    this.path.findByProfil(this.state.situation, this.state.positions[0]);
+    this.path.findByProfil(this.state.situation, this.state.positions[0]).then(path_queue => {
+      Move.move(path_queue.shift())
+      this.setState({ path_queue: path_queue })
+      console.log(path_queue);
+    });
   }
 
   render() {
@@ -109,25 +137,25 @@ class App extends React.Component {
     let cpnt = "";
     switch (this.state.current_screen) {
       case "mission":
-        cpnt = (
-          <Mission
-            data={this.state.last_message}
-            utils={this.utils}
-            modes={this.modes}
-            selected_mode={this.state.selected_mode}
+      cpnt = (
+        <Mission
+          data={this.state.last_message}
+          utils={this.utils}
+          modes={this.modes}
+          selected_mode={this.state.selected_mode}
           />
-        );
-        break;
+      );
+      break;
       default:
-        cpnt = <StandBy data={this.state.last_message} utils={this.utils} />;
-        break;
+      cpnt = <StandBy data={this.state.last_message} utils={this.utils} />;
+      break;
     }
 
     return (
       <React.Fragment>
         <Header current_screen={this.state.current_screen} utils={this.utils} />
         {cpnt}
-        <Footer current_screen={this.state.current_screen} utils={this.utils} />
+        <Footer current_screen={this.state.current_screen} path={this.state.path_queue} utils={this.utils} />
       </React.Fragment>
     );
   }

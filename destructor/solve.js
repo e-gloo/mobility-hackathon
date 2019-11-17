@@ -49,12 +49,6 @@ client.on("connect", () => {
   console.log(subway);
 });
 
-function generateHell() {
-  setTimeout(() => {
-    generateHell();
-  }, 2000);
-}
-
 function move() {
   console.log("MOVE");
   console.log(path_queue);
@@ -144,6 +138,7 @@ client.on("message", async (topic, message) => {
   }
 
   if (topic === "team07/prod/0000000000000000/status/attitude") {
+<<<<<<< HEAD:destructor/test.js
     console.log(message.position.x, message.position.y);
     console.log(user.data.position.x, user.data.position.y);
     console.log(
@@ -154,6 +149,10 @@ client.on("message", async (topic, message) => {
       Math.abs(message.position.x - user.data.position.x) < 0.6 &&
       Math.abs(message.position.y - user.data.position.y) < 0.6
     ) {
+=======
+    if (Math.abs(message.position.x - user.data.position.x) <= 0.6 ||
+      Math.abs(message.position.y - user.data.position.y) <= 0.6) {
+>>>>>>> f057964e3b48a036c677b6a2837c044d3b9871f9:destructor/solve.js
       console.log("!arrived");
       move();
     }
