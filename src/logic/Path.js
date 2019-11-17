@@ -48,19 +48,54 @@ class Path {
       departure: { x: departure.position.x, y: departure.position.y },
       arrival: { x: arrival.x, y: arrival.y },
       vehicles:
-        this.profile.name === "Confort"
-          ? [
-              {
-                id: vehicle.data[0].id,
-                x: vehicle.data[0].attitude.position.x,
-                y: vehicle.data[0].attitude.position.y
-              }
-            ]
-          : null
+      this.profile.name === "Confort"
+      ? [
+        {
+          id: vehicle.data[0].id,
+          x: vehicle.data[0].attitude.position.x,
+          y: vehicle.data[0].attitude.position.y
+        }
+      ]
+      : null
     });
-    console.log(data.data);
-    const paths = data.data.cars[0].paths;
-    return paths;
+    console.log(data.data.cars[0]);
+    const path_queue = [];
+
+    if (
+      Math.abs(data.data.cars[0].paths[0][0] - data.data.cars[0].paths[1][0]) > 0.6 ||
+      Math.abs(data.data.cars[0].paths[0][1] - data.data.cars[0].paths[1][1]) > 0.6
+    ) {
+      path_queue.push({
+        mean: this.profile.sec,
+        to: {
+          x: data.data.cars[0].paths[1][0],
+          y: data.data.cars[0].paths[1][1],
+        }
+      })
+    }
+
+    path_queue.push({
+      mean: this.profile.pri,
+      to: {
+        x: data.data.cars[0].paths[data.data.cars[0].paths.length-1][0],
+        y: data.data.cars[0].paths[data.data.cars[0].paths.length-1][1],
+      }
+    })
+
+    if (
+      Math.abs(data.data.cars[0].paths[data.data.cars[0].paths.length-1][0] - arrival.x) > 0.6 ||
+      Math.abs(data.data.cars[0].paths[data.data.cars[0].paths.length-1][1] - arrival.y) > 0.6
+    ) {
+      path_queue.push({
+        mean: this.profile.sec,
+        to: {
+          x: arrival.x,
+          y: arrival.y,
+        }
+      })
+    }
+    
+    return path_queue;
   }
 }
 

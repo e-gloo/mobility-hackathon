@@ -1,10 +1,10 @@
 // Env demo test
-// config = {
+// const config = {
 //   TOPIC: "project-65",
 //   NAMESPACE: "p65-dev",
 //   BROKER_DOMAIN: "mr1dns3dpz5mjj.messaging.solace.cloud",
 //   BROKER_USER: "team-demo",
-//   BROKER_PASSWORD: "ljkbjg56",
+//   BROKER_PASSWORD: "avion",
 //   BROKER_MQTT_PORT: 8443,
 //   BROKER_TCP_PORT: 1883
 // };

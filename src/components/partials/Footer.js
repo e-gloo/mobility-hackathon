@@ -11,7 +11,7 @@ class Footer extends React.Component {
               this.props.utils.startMission()
             }}
             >
-            Confirm
+            Confirmer
           </a>
         </footer>
       )
