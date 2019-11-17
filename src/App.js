@@ -1,11 +1,15 @@
 import React from "react";
 import "./App.css";
-import { topics, api } from "./config";
+import { topics } from "./config";
 import client from "./events";
-import Default from "./components/Default";
-import Mission from "./components/Mission";
-import Weather from "./components/Weather";
 import Move from "./logic/Move";
+
+import Header from './components/partials/Header'
+import Footer from './components/partials/Footer'
+
+import StandBy from "./components/StandBy";
+import Mission from "./components/Mission";
+
 
 class App extends React.Component {
   constructor(props) {
@@ -13,8 +17,24 @@ class App extends React.Component {
 
     // states
     this.state = {
-      last_topic: "default",
+      modes: [
+        {
+          name: 'Rapide',
+          img: '/img/modes/fast.png'
+        },
+        {
+          name: 'Ecologie',
+          img: '/img/modes/eco.png'
+        },
+        {
+          name: 'Confort',
+          img: '/img/modes/comfort.png'
+        }
+      ],
+      selected_mode: 0,
+      last_topic: null,
       last_message: {},
+      current_screen: 'standby',
       positions: [],
       situation: {
         position: {
@@ -25,41 +45,72 @@ class App extends React.Component {
     };
 
     this.updatePositions = this.updatePositions.bind(this);
+    this.changeMode = this.changeMode.bind(this);
+    this.startMission = this.startMission.bind(this);
 
     // call component according to event
     client.on("message", (topic, message) => {
-      if (topic === topics.objective) {
-        alert("Objectif atteint");
+      switch (topic) {
+        case topics.mission:
+        this.setState({ current_screen: 'mission' })
+        break;
+
+        case topics.objective:
+        this.setState({ current_screen: 'objective' })
         const positions = this.state.positions;
         positions.shift();
         this.setState({ positions: [...positions] });
         if (positions.length > 0) {
           Move.move(this.state.positions[0]);
         }
-      } else {
+        break;
+
+        default:
         this.setState({ last_topic: topic, last_message: JSON.parse(message) });
+        break;
       }
     });
   }
 
-  updatePositions(positions) {
+  changeMode (index) {
+    if (this.state.modes[index]) {
+      this.setState({ selected_mode: index })
+    }
+  }
+
+  updatePositions (positions) {
     this.setState({ positions: positions });
+  }
+
+  startMission () {
+    alert('GO GO GO !!!')
   }
 
   render() {
     this.utils = {
       situation: this.state.situation,
       positions: this.state.positions,
-      updatePositions: this.updatePositions
+      updatePositions: this.updatePositions,
+      changeMode: this.changeMode,
+      startMission: this.startMission,
     };
-    switch (this.state.last_topic) {
-      case topics.mission:
-        return <Mission data={this.state.last_message} utils={this.utils} />;
-      case topics.weather:
-        return <Weather data={this.state.last_message} utils={this.utils} />;
+    let cpnt = '';
+    switch (this.state.current_screen) {
+      case 'mission':
+      cpnt = <Mission data={this.state.last_message} utils={this.utils} modes={this.state.modes} selected_mode={this.state.selected_mode} />;
+      break;
       default:
-        return <Default data={this.state.last_message} utils={this.utils} />;
+      cpnt = <StandBy data={this.state.last_message} utils={this.utils} />;
+      break;
     }
+
+    return (
+      <React.Fragment>
+        <Header current_screen={this.state.current_screen} utils={this.utils} />
+        { cpnt }
+        <Footer current_screen={this.state.current_screen} utils={this.utils} />
+      </React.Fragment>
+    )
   }
 }
 

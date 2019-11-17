@@ -1,22 +1,104 @@
-.App {
-  text-align: center;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
 }
 
-.App-logo {
-  height: 40vmin;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+#root {
+  height: 58vh;
+  width: 100vw;
+  position: relative;
+  padding-top: 21vh;
+  padding-bottom: 21vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  flex-direction: column;
+  background-color: #292929;
+  color: #ffffff;
+  font-family: Ubuntu, Verdana, Arial, sans-serif;
 }
 
-.App-link {
-  color: #09d3ac;
+header {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  height: 20vh;
+  background-color: #adadad;
+  color: #333333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+header #headline {
+  border-left: .5em solid #fcd547;
+  padding-left: 2em;
+  height: 100%;
+  line-height: 15vh;
+}
+
+footer {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  height: 20vh;
+  background-color: #adadad;
+  color: #333333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.modes {
+  display: flex;
+  flex-direction: row;
+  margin: 0 3em;
+}
+
+a.mode {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-decoration: none;
+  line-height: 2em;
+  text-transform: uppercase;
+  transition: order .2s, transform .5s;
+}
+
+a.mode.Rapide {
+  color: #f4ff11;
+}
+
+a.mode.Confort {
+  color: #00aaff;
+}
+
+a.mode.Ecologie {
+  color: #00ff00;
+}
+
+a.mode img {
+  width: 70%;
+  margin: auto;
+}
+
+a.mode.selected {
+  transform: scale(1.4);
+  order: 0 !important;
+}
+
+a#confirm-mode {
+  display: block;
+  border: 1px solid #333333;
+  background-color: #ffffff;
+  color: #333333;
+  padding: 1.5em;
+  font-size: 1.3em;
+  text-decoration: none;
 }

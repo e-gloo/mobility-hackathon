@@ -1,5 +1,4 @@
 import React from "react";
-import Path from "../logic/Path";
 import Move from "../logic/Move";
 
 export default class Mission extends React.Component {
@@ -21,28 +20,39 @@ export default class Mission extends React.Component {
   }
 
   handleClick(e) {
-    e.preventDefault();
+    e.preventDefault()
     this.setState({ ongoing: true });
-    // const path = Path.find(
-    //   {
-    //     x: this.props.utils.situation.position.x,
-    //     y: this.props.utils.situation.position.y
-    //   },
-    //   { x: this.props.data.positions[0].x, y: this.props.data.positions[0].y }
-    // );
-    Move.move(this.props.utils.positions[0]);
+    // Move.move(this.props.data.positions[0]);
   }
-  render() {
-    return (
-      <>
-        <p>Mission</p>
 
+  render() {
+    let ordered = -1;
+    return (
+      <React.Fragment>
         {this.state.ongoing ? (
-          <p>En déplacement</p>
+          <p>Vroum Vroum</p>
         ) : (
-          <button onClick={this.handleClick}>Go</button>
+          <React.Fragment>
+            <div className="modes">
+              {this.props.modes.map((m, i) => (
+                <a
+                  key={i}
+                  href='#'
+                  className={`mode ${m.name}`+(i === this.props.selected_mode ? ' selected' : '')}
+                  style={{order: i !== this.props.selected_mode && ordered++ ? 1 : -1}}
+                  onClick={e => {
+                    e.preventDefault();
+                    this.props.utils.changeMode(i)
+                  }}>
+                  <img src={m.img} alt={m.name} />
+                  {m.name}
+                </a>
+              ))}
+            </div>
+
+          </React.Fragment>
         )}
-      </>
+      </React.Fragment>
     );
   }
 }
