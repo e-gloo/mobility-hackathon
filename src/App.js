@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 
-import axios from 'axios';
+import axios from "axios";
 
 import { topics, api } from "./config";
 import client from "./events";
@@ -55,52 +55,60 @@ class App extends React.Component {
 
     // call component according to event
     client.on("message", (topic, message) => {
+      message = JSON.parse(message);
       switch (topic) {
         case topics.status:
-        if (JSON.parse(message).status === 'stopped') {
-          axios
-          .get(api.last)
-          .then(response => {
-            this.setState({ situation: response.data });
-          });
-          if (this.state.path_queue.length > 0) {
-            let path_queue = this.state.path_queue
-            Move.move(path_queue.shift())
-            this.setState({ path_queue: path_queue })
+          if (message.status === "stopped") {
+            axios.get(api.last).then(response => {
+              this.setState({ situation: response.data });
+            });
+            if (this.state.path_queue.length > 0) {
+              let path_queue = this.state.path_queue;
+              Move.move(path_queue.shift());
+              this.setState({ path_queue: path_queue });
+            }
           }
-        }
-        break;
+          break;
         case topics.mission:
-        this.setState({
-          current_screen: "mission",
-          last_topic: topic,
-          last_message: JSON.parse(message)
-        });
-        break;
+          this.setState({
+            current_screen: "mission",
+            last_topic: topic,
+            last_message: message
+          });
+          break;
 
         case topics.objective:
-        const positions = this.state.positions;
-        positions.shift();
-        this.setState({
-          positions: [...positions],
-          current_screen: positions.length > 0 ? "mission" : "finished"
-        });
-        break;
+          const positions = this.state.positions;
+          positions.shift();
+          this.setState({
+            positions: [...positions],
+            current_screen: positions.length > 0 ? "mission" : "finished"
+          });
+          break;
+
+        case topics.carState:
+          if (
+            this.state.path_queue.length > 0 &&
+            Math.abs(message.position.x - user.data.position.x) <= 0.6 &&
+            Math.abs(message.position.y - user.data.position.y) <= 0.6
+          ) {
+            let path_queue = this.state.path_queue;
+            Move.move(path_queue.shift());
+            this.setState({ path_queue: path_queue });
+          }
 
         default:
-        this.setState({
-          last_topic: topic,
-          last_message: JSON.parse(message)
-        });
-        break;
+          this.setState({
+            last_topic: topic,
+            last_message: message
+          });
+          break;
       }
     });
   }
 
   componentDidMount() {
-    axios
-    .get(api.last)
-    .then(response => {
+    axios.get(api.last).then(response => {
       this.setState({ situation: response.data });
     });
   }
@@ -119,11 +127,13 @@ class App extends React.Component {
   startMission() {
     // alert("GO GO GO !!!");
     this.path = new Path(this.modes[this.state.selected_mode].name);
-    this.path.findByProfil(this.state.situation, this.state.positions[0]).then(path_queue => {
-      Move.move(path_queue.shift())
-      this.setState({ path_queue: path_queue })
-      console.log(path_queue);
-    });
+    this.path
+      .findByProfil(this.state.situation, this.state.positions[0])
+      .then(path_queue => {
+        Move.move(path_queue.shift());
+        this.setState({ path_queue: path_queue });
+        console.log(path_queue);
+      });
   }
 
   render() {
@@ -137,25 +147,29 @@ class App extends React.Component {
     let cpnt = "";
     switch (this.state.current_screen) {
       case "mission":
-      cpnt = (
-        <Mission
-          data={this.state.last_message}
-          utils={this.utils}
-          modes={this.modes}
-          selected_mode={this.state.selected_mode}
+        cpnt = (
+          <Mission
+            data={this.state.last_message}
+            utils={this.utils}
+            modes={this.modes}
+            selected_mode={this.state.selected_mode}
           />
-      );
-      break;
+        );
+        break;
       default:
-      cpnt = <StandBy data={this.state.last_message} utils={this.utils} />;
-      break;
+        cpnt = <StandBy data={this.state.last_message} utils={this.utils} />;
+        break;
     }
 
     return (
       <React.Fragment>
         <Header current_screen={this.state.current_screen} utils={this.utils} />
         {cpnt}
-        <Footer current_screen={this.state.current_screen} path={this.state.path_queue} utils={this.utils} />
+        <Footer
+          current_screen={this.state.current_screen}
+          path={this.state.path_queue}
+          utils={this.utils}
+        />
       </React.Fragment>
     );
   }
