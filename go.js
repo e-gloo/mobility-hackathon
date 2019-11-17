@@ -75,7 +75,7 @@ client.on("connect", () => {
       mission: "Yo !",
       positions: [
         // { x: 0.2, y: 2.0 },
-        { x: 8.6, y: 3.8 }
+        { x: 14.6, y: 3.8 }
         // { x: 4.9, y: 3.8 },
       ]
     })
